@@ -372,3 +372,5 @@ profile.arm.json
 launchSettings.json
 serviceDependencies.bodyfit - Web Deploy.json.user
 serviceDependencies.json
+/BodyFit.Server/appsettings.json
+/BodyFit.Server/appsettings.Development.json
