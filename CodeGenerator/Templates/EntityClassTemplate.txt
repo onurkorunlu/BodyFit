@@ -1,0 +1,6 @@
+﻿namespace BodyFit.Entities
+{
+    public class @EntityName : MongoBaseEntity
+    {
+    }
+}

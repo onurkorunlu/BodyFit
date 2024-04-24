@@ -1,0 +1,15 @@
+<c-row class="g-4" *ngIf="widgetModels">
+  <c-col sm="6" xl="3" *ngFor="let widget of widgetModels" >
+    <c-widget-stat-a [style.background]="widget.color" style="color: white;" [title]="widget.title">
+      <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+        {{widget.mainValue | number : '1.2-2'}}
+        <span class="fw-normal" style="font-size: 12px;">
+          ({{widget.rateChange | number : '1.2-2'}}% <svg cIcon name="cilArrowBottom" size="sm"></svg>)
+        </span>
+      </ng-template>
+      <ng-template cTemplateId="widgetChartTemplate">
+        <c-chart [data]="widget.chartData" [options]="getOption(widget)" class="mt-3 mx-3" height="100" [type]="'line'"></c-chart>
+      </ng-template>
+    </c-widget-stat-a>
+  </c-col>
+</c-row>

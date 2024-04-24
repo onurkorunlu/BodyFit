@@ -1,0 +1,122 @@
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+        <c-card class="mb-12">
+            <c-card-header>
+                <strong>Vücut Ölçüleri</strong>
+            </c-card-header>
+            <c-card-body>
+                <form cForm class="row g-3">
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Tarih</label>
+                        <input cFormControl type="date" [ngModel]="updateModel.date | date:'yyyy-MM-dd'"
+                            (ngModelChange)="updateModel.date  = $event" (change)="DateChanged()"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Kilo (kg)</label>
+                        <input cFormControl type="text" [(ngModel)]="updateModel.weight"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Boyun Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.neckSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Göğüs Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.chestSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Üst Karın Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.epigastriumSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Göbek Ölçüsü</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.bellySize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Bel Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.waistSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Kalça Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.buttockSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Basen Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.haunchSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Baldır Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.calfSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Pazı Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.bicepsSize"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Ön Kol Ölçüsü (cm)</label>
+                        <input cFormControl type="number" [(ngModel)]="updateModel.underArm"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="12" style="text-align: end;">
+                        <button cButton color="success" [disabled]="!updateModel.isValid()"
+                            (click)="update()">Güncelle</button>
+                    </c-col>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>
+<hr>
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+        <c-card class="mb-12">
+            <c-card-header>
+                <strong>Ölçümlerim</strong>
+            </c-card-header>
+            <c-card-body>
+                <table cTable [responsive]="true">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Boyun Ölçüsü</th>
+                            <th>Göğüs Ölçüsü</th>
+                            <th>Üst Karın Ölçüsü</th>
+                            <th>Göbek Ölçüsü</th>
+                            <th>Bel Ölçüsü</th>
+                            <th>Kalça Ölçüsü</th>
+                            <th>Basen Ölçüsü</th>
+                            <th>Baldır Ölçüsü</th>
+                            <th>Pazı Ölçüsü</th>
+                            <th>Ön Kol Ölçüsü</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of measurementModel.measurementDetails">
+                            <td>{{item.date | date:'dd.MM.yyyy'}}</td>
+                            <td>{{item.neckSize}} cm</td>
+                            <td>{{item.chestSize}} cm</td>
+                            <td>{{item.epigastriumSize}} cm</td>
+                            <td>{{item.bellySize}} cm</td>
+                            <td>{{item.waistSize}} cm</td>
+                            <td>{{item.buttockSize}} cm</td>
+                            <td>{{item.haunchSize}} cm</td>
+                            <td>{{item.calfSize}} cm</td>
+                            <td>{{item.bicepsSize}} cm</td>
+                            <td>{{item.underArm}} cm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>

@@ -1,0 +1,14 @@
+﻿using BodyFit.Business.Base;
+using BodyFit.Business.Helpers;
+using BodyFit.Business.Interfaces;
+using BodyFit.Common;
+using BodyFit.Core;
+using BodyFit.DataAccess.Interfaces;
+using BodyFit.Entities;
+
+namespace BodyFit.Business.Services
+{
+    public class @EntityNameService : BaseService<@EntityName, I@EntityNameDataAccess>, I@EntityNameService
+    {
+    }
+}

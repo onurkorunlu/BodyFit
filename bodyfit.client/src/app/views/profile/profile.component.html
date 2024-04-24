@@ -1,0 +1,59 @@
+<c-row ngPreserveWhitespaces>
+    <c-col xs="12">
+        <c-card class="mb-12">
+            <c-card-header>
+                <strong>Profil Bilgileri Güncelle</strong>
+            </c-card-header>
+            <c-card-body>
+                <form cForm class="row g-3">
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>E-Posta Adresi</label>
+                        <input cFormControl placeholder="180" type="text" [(ngModel)]="updateModel.emailAddress"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>Boy (cm)</label>
+                        <input cFormControl placeholder="180" type="number" [(ngModel)]="updateModel.height"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>Hedef Kilo</label>
+                        <input cFormControl id="exampleFormControlInput1" placeholder="80" type="number"
+                            [(ngModel)]="updateModel.targetWeight" [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>Günlük Aktivite</label>
+                        <select cSelect [(ngModel)]="updateModel.dailyActivityType"
+                            [ngModelOptions]="{standalone: true}">
+                            <option value="0" selected>Günlük Aktivitenizi Seçiniz</option>
+                            <option value="1">Hareketsiz</option>
+                            <option value="2">Hareketli</option>
+                        </select>
+                    </c-col>
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>Ekzersiz Periyodu</label>
+                        <select cSelect [(ngModel)]="updateModel.exercisePeriod" [ngModelOptions]="{standalone: true}">
+                            <option value="0" selected>Egzersiz Sıklığınızı Seçiniz</option>
+                            <option value="1">Hergün</option>
+                            <option value="2">Haftada Birkaç Kez</option>
+                            <option value="3">Ayda Birkaç Kez</option>
+                            <option value="4">Egzersiz Yapmıyorum</option>
+                        </select>
+                    </c-col>
+                    <c-col xs="auto" [md]="4">
+                        <label cLabel>Hedef</label>
+                        <select cSelect [(ngModel)]="updateModel.targetType" [ngModelOptions]="{standalone: true}">
+                            <option value="0" selected>Hedefinizi Seçiniz</option>
+                            <option value="1">Kilo Vermek</option>
+                            <option value="2">Kas Yapmak</option>
+                            <option value="3">Sağlıklı Yaşam</option>
+                        </select>
+                    </c-col>
+                    <c-col xs="auto" [md]="12" style="text-align: end;">
+                        <button cButton color="success" [disabled]="!updateModel.isValid()"  (click)="update()">Güncelle</button>
+                    </c-col>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BodyFit.Common\BodyFit.Common.csproj" />
+    <ProjectReference Include="..\BodyFit.Core\BodyFit.Core.csproj" />
+    <ProjectReference Include="..\BodyFit.DataAccess\BodyFit.DataAccess.csproj" />
+    <ProjectReference Include="..\BodyFit.Entities\BodyFit.Entities.csproj" />
+    <ProjectReference Include="..\BodyFit.Model\BodyFit.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
+  </ItemGroup>
+
+</Project>

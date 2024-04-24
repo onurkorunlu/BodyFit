@@ -1,0 +1,10 @@
+﻿using BodyFit.Business.Base;
+using BodyFit.DataAccess.Interfaces;
+using BodyFit.Entities;
+
+namespace BodyFit.Business.Interfaces
+{
+    public interface I@EntityNameService : IBaseService<@EntityName, I@EntityNameDataAccess>
+    {
+    }
+}

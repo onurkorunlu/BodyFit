@@ -1,0 +1,9 @@
+﻿using BodyFit.Entities.Enums;
+
+namespace BodyFit.Model.@Folder
+{
+    public class @EntityName
+    {
+        public string Id { get; set; }
+    }
+}
