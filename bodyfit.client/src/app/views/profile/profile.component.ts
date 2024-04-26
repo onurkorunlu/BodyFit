@@ -6,7 +6,7 @@ import { SelectComponent } from '../forms/select/select.component';
 import { CommonProviders } from 'src/app/helpers/commonProviders';
 import { UserService } from 'src/app/services/user.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { RegisterModel } from 'src/app/models/requestModel/registerModel';
+import { ProfileRequest } from 'src/app/models/requestModel/profileRequest';
 
 @Component({
     selector: 'app-profile',
@@ -17,7 +17,7 @@ import { RegisterModel } from 'src/app/models/requestModel/registerModel';
 })
 export class ProfileComponent {
   
-  updateModel : RegisterModel = new RegisterModel();
+  updateModel : ProfileRequest = new ProfileRequest();
 
   constructor( public userService:UserService, public toastService:ToastService) { }
 
@@ -31,8 +31,8 @@ export class ProfileComponent {
         this.updateModel.targetType = v.targetType;
         this.updateModel.exercisePeriod = v.exercisePeriod;
         this.updateModel.username = v.username;
-        this.updateModel.password = "password";
-        this.updateModel.password2 = "password";
+        this.updateModel.age = v.age;
+        this.updateModel.gender = v.gender
       },
       error: (e) => this.toastService.showError(e.message),
       complete: () => console.info('complete')

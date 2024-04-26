@@ -1,4 +1,4 @@
-import { DOCUMENT, NgStyle } from '@angular/common';
+import { DOCUMENT, DecimalPipe, NgIf, NgStyle } from '@angular/common';
 import { Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
@@ -26,8 +26,11 @@ import { WidgetsBrandComponent } from '../widgets/widgets-brand/widgets-brand.co
 import { WidgetsDropdownComponent } from '../widgets/widgets-dropdown/widgets-dropdown.component';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { MeasurementsService } from 'src/app/services/measurements-service';
-import { Measurement } from 'src/app/models/entities/measurement';
+import { Measurement, MeasurementDetail } from 'src/app/models/entities/measurement';
 import { ToastService } from 'src/app/services/toast.service';
+import { AppUser } from 'src/app/models/entities/appUser';
+import { UserService } from 'src/app/services/user.service';
+import { GenderType } from 'src/app/models/enums/GenderType';
 
 interface IUser {
   name: string;
@@ -47,18 +50,24 @@ interface IUser {
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
   standalone: true,
-  imports: [WidgetsDropdownComponent, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
+  imports: [WidgetsDropdownComponent, NgIf, DecimalPipe, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
 })
 export class DashboardComponent implements OnInit {
 
   measurementModel: Measurement = new Measurement();
-  
+  lastMeasurementModel: MeasurementDetail = new MeasurementDetail();
+  appUser: AppUser = new AppUser();
+
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #document: Document = inject(DOCUMENT);
   readonly #renderer: Renderer2 = inject(Renderer2);
   readonly #chartsData: DashboardChartsData = inject(DashboardChartsData);
 
-  constructor(public measurementService:MeasurementsService,public toastService:ToastService) { }
+  constructor(
+    public measurementService: MeasurementsService,
+    public toastService: ToastService,
+    public userService: UserService
+  ) { }
 
   public users: IUser[] = [
     {
@@ -160,10 +169,41 @@ export class DashboardComponent implements OnInit {
     this.measurementService.get().subscribe({
       next: (v) => {
         this.measurementModel = v;
+        this.lastMeasurementModel = v.measurementDetails[v.measurementDetails.length - 1];
       },
       error: (e) => this.toastService.showError(e.message),
       complete: () => console.info('complete')
     });
+
+    this.userService.get().subscribe({
+      next: (v) => {
+        this.appUser = v;
+      },
+      error: (e) => this.toastService.showError(e.message),
+      complete: () => console.info('complete')
+    });
+  }
+
+  getBMI(): number {
+    return this.lastMeasurementModel.weight / Math.pow(this.appUser.height / 100, 2);
+  }
+
+  getBodyFatRatio(): number {
+    if (this.appUser.gender == GenderType.Male) {
+      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 16.2;
+    }
+    else {
+      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 5.4;
+    }
+  }
+
+  getBodyMassRatio(): number {
+    if (this.appUser.gender == GenderType.Male) {
+      return Math.pow(this.appUser.height,2) * this.getBMI();
+    }
+    else {
+      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 5.4;
+    }
   }
 
   initCharts(): void {

@@ -20,8 +20,10 @@ namespace BodyFit.Entities
         [DisplayName("Kullanıcı Rolü")]
         public ObjectId RoleId { get; set; }
 
+        public int Age { get; set; }
         public int Height { get; set; }
         public decimal TargetWeight { get; set; }
+        public GenderType Gender { get; set; }
 
         public ExercisePeriod ExercisePeriod { get; set; }
         public TargetType TargetType { get; set; }
@@ -52,5 +54,11 @@ namespace BodyFit.Entities
         AFewTimesInWeek,
         AFewTimesInMonth,
         Never
+    }
+
+    public enum GenderType
+    {
+        Male,
+        Female
     }
 }

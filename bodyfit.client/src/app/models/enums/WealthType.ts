@@ -1,6 +1,0 @@
-export enum WealthType
-{
-    FOREIGN_EXCHANGE_AND_PRECIOUS_METALS,
-    STOCK_TRADING,
-    FUND_TRADING
-}

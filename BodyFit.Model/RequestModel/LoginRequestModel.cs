@@ -22,6 +22,9 @@ namespace BodyFit.Model.RequestModel
         [EmailAddress(ErrorMessage = "Lütfen geçerli bir e-posta adresi giriniz.")]
         public string EmailAddress { get; set; }
 
+        [Required(ErrorMessage = "Yaşınızı giriniz.")]
+        public int Age { get; set; }
+
         [Required(ErrorMessage = "Boyunuzu giriniz.")]
         public int Height { get; set; }
 
@@ -36,6 +39,9 @@ namespace BodyFit.Model.RequestModel
 
         [Required(ErrorMessage = "Günlük aktivitenizi seçiniz.")]
         public DailyActivityType DailyActivityType { get; set; }
+
+        [Required(ErrorMessage = "Cinsiyetinizi seçiniz.")]
+        public GenderType Gender { get; set; }
 
     }
 }

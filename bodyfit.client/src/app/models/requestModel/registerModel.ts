@@ -8,6 +8,8 @@ export class RegisterModel{
     dailyActivityType: number;
     targetType: number;
     exercisePeriod: number;
+    gender:number;
+    age:number | null;
 
     constructor(){
         this.username = "";
@@ -19,6 +21,8 @@ export class RegisterModel{
         this.dailyActivityType = 0;
         this.targetType = 0;
         this.exercisePeriod = 0;
+        this.gender = 0;
+        this.age=null;
     }
 
     public isValid(): boolean{
@@ -56,6 +60,14 @@ export class RegisterModel{
         }
 
         if(this.exercisePeriod == 0){
+            return false;
+        }
+
+        if (this.gender == 0) {
+            return false;
+        }
+
+        if (this.age == 0) {
             return false;
         }
 

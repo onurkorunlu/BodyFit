@@ -15,7 +15,7 @@ import { RowComponent, ColComponent, WidgetStatAComponent, TemplateIdDirective, 
 import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { fill } from 'lodash-es';
 import { MeasurementsService } from 'src/app/services/measurements-service';
-import { Measurement } from 'src/app/models/entities/measurement';
+import { Measurement, MeasurementDetail } from 'src/app/models/entities/measurement';
 import { ToastService } from 'src/app/services/toast.service';
 
 interface WidgetModel {
@@ -39,7 +39,7 @@ interface ChartData {
   styleUrls: ['./widgets-dropdown.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [RowComponent,DecimalPipe, NgFor, NgIf, ColComponent, WidgetStatAComponent, TemplateIdDirective, IconDirective, ThemeDirective, DropdownComponent, ButtonDirective, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, RouterLink, DropdownDividerDirective, ChartjsComponent]
+  imports: [RowComponent, DecimalPipe, NgFor, NgIf, ColComponent, WidgetStatAComponent, TemplateIdDirective, IconDirective, ThemeDirective, DropdownComponent, ButtonDirective, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, RouterLink, DropdownDividerDirective, ChartjsComponent]
 })
 export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
 
@@ -104,9 +104,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   };
 
   measurementModel: Measurement = new Measurement();
+  lastMeasurement: MeasurementDetail = new MeasurementDetail();
 
   ngOnInit(): void {
-    
+
     this.option = JSON.parse(JSON.stringify(this.optionsDefault));
     this.option.scales.y.min = 50;
     this.option.scales.y.max = 80;
@@ -115,8 +116,9 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     this.measurementService.get().subscribe({
       next: (v) => {
         this.measurementModel = v;
-        this.prepareWeightChart(); 
-        this.prepareChestChart(); 
+        this.lastMeasurement = v.measurementDetails[v.measurementDetails.length - 1];
+        this.prepareWeightChart();
+        this.prepareChestChart();
         this.prepareBellChart();
         this.prepareButtockChart();
       },
@@ -129,28 +131,33 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     this.changeDetectorRef.detectChanges();
   }
 
-  getFormattedDate(date:Date): string  {
+  getFormattedDate(date: Date): string {
     return this.datePipe.transform(date, 'dd MMM yyyy') ?? '';
   }
 
   prepareWeightChart() {
 
     let dates = this.measurementModel.measurementDetails.map(x => this.getFormattedDate(x.date));
-    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.weight,'1.2-2')) ?? '';
+    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.weight, '1.2-2')) ?? '';
 
     let weightChartData = {
       labels: dates,
       datasets: [{
         backgroundColor: 'transparent',
         borderColor: 'rgba(255,255,255,.55)',
-        pointBackgroundColor: getStyle('--cui-primary'),
-        pointHoverBorderColor: getStyle('--cui-primary'),
+        pointBackgroundColor: getStyle('--cui-white'),
+        pointHoverBorderColor: getStyle('--cui-white'),
         data: weights
       }]
     };
 
-    let finalWeight = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-1].weight;
-    let beforeWeight = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-2].weight;
+    let finalWeight = this.lastMeasurement.weight;
+    let beforeWeight = finalWeight;
+
+    if (this.measurementModel.measurementDetails.length > 1) {
+      beforeWeight = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].weight;
+    }
+
     let maxWeight = Math.max(...this.measurementModel.measurementDetails.map(x => x.weight));
     let minWeight = Math.min(...this.measurementModel.measurementDetails.map(x => x.weight));
     let rateChange = ((finalWeight - beforeWeight) / beforeWeight) * 100;
@@ -163,7 +170,7 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   prepareChestChart() {
 
     let dates = this.measurementModel.measurementDetails.map(x => this.getFormattedDate(x.date));
-    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.chestSize,'1.2-2')) ?? '';
+    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.chestSize, '1.2-2')) ?? '';
 
     let weightChartData = {
       labels: dates,
@@ -176,8 +183,12 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
       }]
     };
 
-    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-1].chestSize;
-    let before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-2].chestSize;
+    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 1].chestSize;
+    let before = final;
+    if (this.measurementModel.measurementDetails.length > 1) {
+      before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].chestSize;
+    }
+
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.chestSize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.chestSize));
     let rateChange = ((final - before) / before) * 100;
@@ -190,21 +201,24 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   prepareBellChart() {
 
     let dates = this.measurementModel.measurementDetails.map(x => this.getFormattedDate(x.date));
-    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.bellySize,'1.2-2')) ?? '';
+    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.bellySize, '1.2-2')) ?? '';
 
     let weightChartData = {
       labels: dates,
       datasets: [{
         backgroundColor: 'transparent',
         borderColor: 'rgba(255,255,255,.55)',
-        pointBackgroundColor: getStyle('--cui-primary'),
-        pointHoverBorderColor: getStyle('--cui-primary'),
+        pointBackgroundColor: getStyle('--cui-white'),
+        pointHoverBorderColor: getStyle('--cui-white'),
         data: weights
       }]
     };
 
-    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-1].bellySize;
-    let before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-2].bellySize;
+    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 1].bellySize;
+    let before = final;
+    if (this.measurementModel.measurementDetails.length > 1) {
+      before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].bellySize;
+    }
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.bellySize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.bellySize));
     let rateChange = ((final - before) / before) * 100;
@@ -217,21 +231,24 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   prepareButtockChart() {
 
     let dates = this.measurementModel.measurementDetails.map(x => this.getFormattedDate(x.date));
-    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.buttockSize,'1.2-2')) ?? '';
+    let weights = this.measurementModel.measurementDetails.map(x => this.decimalPipe.transform(x.buttockSize, '1.2-2')) ?? '';
 
     let weightChartData = {
       labels: dates,
       datasets: [{
         backgroundColor: 'transparent',
         borderColor: 'rgba(255,255,255,.55)',
-        pointBackgroundColor: getStyle('--cui-primary'),
-        pointHoverBorderColor: getStyle('--cui-primary'),
+        pointBackgroundColor: getStyle('--cui-white'),
+        pointHoverBorderColor: getStyle('--cui-white'),
         data: weights
       }]
     };
 
-    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-1].buttockSize;
-    let before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length-2].buttockSize;
+    let final = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 1].buttockSize;
+    let before = final;
+    if (this.measurementModel.measurementDetails.length > 1) {
+      before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].buttockSize;
+    }
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.buttockSize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.buttockSize));
     let rateChange = ((final - before) / before) * 100;
@@ -241,9 +258,9 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     });
   }
   getOption(widget: WidgetModel): any {
-    let opt= this.option;
-    opt.scales.y.max = widget.maxValue +10;
-    opt.scales.y.min = widget.minValue -10;
+    let opt = this.option;
+    opt.scales.y.max = widget.maxValue + (widget.maxValue * 0.5);
+    opt.scales.y.min = widget.minValue - (widget.minValue * 0.5);
     return opt;
   }
 }

@@ -46,5 +46,12 @@ namespace BodyFit.Model.RequestModel
 
         [Required(ErrorMessage = "Günlük aktivitenizi seçiniz.")]
         public DailyActivityType DailyActivityType { get; set; }
+
+        [Required(ErrorMessage = "Cinsiyetinizi seçiniz.")]
+        public GenderType Gender { get; set; }
+
+        [Required(ErrorMessage = "Yaşınızı giriniz.")]
+        public int Age { get; set; }
+
     }
 }

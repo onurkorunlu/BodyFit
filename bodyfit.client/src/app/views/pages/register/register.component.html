@@ -20,13 +20,34 @@
                   [(ngModel)]="registerModel.emailAddress" [ngModelOptions]="{standalone: true}" />
               </c-input-group>
               <c-input-group class="mb-3">
-                <span cInputGroupText>&#64;</span>
-                <input  cFormControl placeholder="Boy (cm)" [(ngModel)]="registerModel.height"
+                <span cInputGroupText>
+                  <svg cIcon name="cilKeyboard"></svg>
+                </span>
+                <input  cFormControl placeholder="Yaş" type="number"
+                  [(ngModel)]="registerModel.age" [ngModelOptions]="{standalone: true}" />
+              </c-input-group>
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilRunning"></svg>
+                </span>
+                <select cSelect [(ngModel)]="registerModel.gender" [ngModelOptions]="{standalone: true}">
+                  <option value="-1" selected>Cinsiyet Seçiniz</option>
+                  <option value="0">Erkek</option>
+                  <option value="1">Kadın</option>
+                </select>
+              </c-input-group>
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilKeyboard"></svg>
+                </span>
+                <input  cFormControl placeholder="Boy (cm)" [(ngModel)]="registerModel.height" type="number"
                   [ngModelOptions]="{standalone: true}" />
               </c-input-group>
               <c-input-group class="mb-3">
-                <span cInputGroupText>&#64;</span>
-                <input  cFormControl placeholder="Hedef Kilo"
+                <span cInputGroupText>
+                  <svg cIcon name="cilKeyboard"></svg>
+                </span>
+                <input  cFormControl placeholder="Hedef Kilo" type="number"
                   [(ngModel)]="registerModel.targetWeight" [ngModelOptions]="{standalone: true}" />
               </c-input-group>
               <c-input-group class="mb-3">

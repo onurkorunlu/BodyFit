@@ -78,6 +78,8 @@ namespace BodyFit.Controllers
                     TargetType = model.TargetType,
                     Height = model.Height,
                     ExercisePeriod = model.ExercisePeriod,
+                    Age = model.Age,
+                    Gender = model.Gender,
                 };
 
                 var registerResult = AppServiceProvider.Instance.Get<IAppUserService>().Register(requestModel);
@@ -108,9 +110,13 @@ namespace BodyFit.Controllers
                 {
                     //Fill Here
                     updateModel.DailyActivityType = model.DailyActivityType;
+                    updateModel.ExercisePeriod = model.ExercisePeriod;
                     updateModel.Height = model.Height;
                     updateModel.TargetType = model.TargetType;
                     updateModel.TargetWeight = model.TargetWeight;
+                    updateModel.Gender = model.Gender;
+                    updateModel.Age = model.Age;
+                    
                     AppServiceProvider.Instance.Get<IAppUserService>().Update(updateModel);
                 }
                 else

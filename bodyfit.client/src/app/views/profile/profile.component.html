@@ -11,12 +11,25 @@
                         <input cFormControl placeholder="180" type="text" [(ngModel)]="updateModel.emailAddress"
                             [ngModelOptions]="{standalone: true}" />
                     </c-col>
-                    <c-col xs="auto" [md]="4">
-                        <label cLabel>Boy (cm)</label>
-                        <input cFormControl placeholder="180" type="number" [(ngModel)]="updateModel.height"
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Cinsiyet</label>
+                        <select cSelect [(ngModel)]="updateModel.gender" [ngModelOptions]="{standalone: true}">
+                            <option value="-1" selected>Cinsiyet Seçiniz</option>
+                            <option value="0">Erkek</option>
+                            <option value="1">Kadın</option>
+                          </select>
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Yaş</label>
+                        <input cFormControl placeholder="180" type="text" [(ngModel)]="updateModel.age" type="number"
                             [ngModelOptions]="{standalone: true}" />
                     </c-col>
-                    <c-col xs="auto" [md]="4">
+                    <c-col xs="auto" [md]="2">
+                        <label cLabel>Boy (cm)</label>
+                        <input cFormControl placeholder="180" type="number" [(ngModel)]="updateModel.height" type="number"
+                            [ngModelOptions]="{standalone: true}" />
+                    </c-col>
+                    <c-col xs="auto" [md]="2">
                         <label cLabel>Hedef Kilo</label>
                         <input cFormControl id="exampleFormControlInput1" placeholder="80" type="number"
                             [(ngModel)]="updateModel.targetWeight" [ngModelOptions]="{standalone: true}" />
@@ -31,7 +44,7 @@
                         </select>
                     </c-col>
                     <c-col xs="auto" [md]="4">
-                        <label cLabel>Ekzersiz Periyodu</label>
+                        <label cLabel>Egzersiz Periyodu</label>
                         <select cSelect [(ngModel)]="updateModel.exercisePeriod" [ngModelOptions]="{standalone: true}">
                             <option value="0" selected>Egzersiz Sıklığınızı Seçiniz</option>
                             <option value="1">Hergün</option>

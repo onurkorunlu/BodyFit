@@ -22,6 +22,7 @@ export class EntryMeasurementsComponent {
 
   measurementModel: Measurement = new Measurement();
   updateModel: MeasurementRequest = new MeasurementRequest();
+  
 
   constructor(public measurementService: MeasurementsService, public toastService: ToastService,private datePipe: DatePipe) { }
 
