@@ -45,7 +45,7 @@ namespace BodyFit.Controllers
                 if (updateModel != null)
                 {
                     //Fill Here
-                    var currentDetail = updateModel.MeasurementDetails.FirstOrDefault(x => x.Date.Date == model.Date.Date);
+                    var currentDetail = updateModel.MeasurementDetails.FirstOrDefault(x => x.Date.Date == model.Date.ToLocalTime().Date);
 
                     if (currentDetail != null)
                     {

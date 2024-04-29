@@ -3,71 +3,78 @@
 <c-card class="my-4">
   <c-card-body>
     <c-row>
+      <c-col>
+        <h4 class="card-title mb-0" id="traffic">Ölçüm Geçmişi</h4>
+      </c-col>
+    </c-row>
+    <hr>
+        <table cTable [responsive]="true">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Kilo</th>
+              <th>Boyun Ölçüsü</th>
+              <th>Göğüs Ölçüsü</th>
+              <th>Üst Karın Ölçüsü</th>
+              <th>Göbek Ölçüsü</th>
+              <th>Bel Ölçüsü</th>
+              <th>Kalça Ölçüsü</th>
+              <th>Basen Ölçüsü</th>
+              <th>Baldır Ölçüsü</th>
+              <th>Pazı Ölçüsü</th>
+              <th>Ön Kol Ölçüsü</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of measurementModel.measurementDetails.slice(Math.max(measurementModel.measurementDetails.length - 5, 0))
+            ">
+              <td>{{item.date | date:'dd.MM.yyyy'}}</td>
+              <td>{{item.weight}} kg <span *ngIf="getBeforeValue(item)">({{item.weight - (getBeforeValue(item)?.weight ?? 0)}}cm)</span></td>
+              <td>{{item.neckSize}} cm <span *ngIf="getBeforeValue(item)">({{item.neckSize - (getBeforeValue(item)?.neckSize ?? 0)}}cm)</span></td>
+              <td>{{item.chestSize}} cm<span *ngIf="getBeforeValue(item)">({{item.chestSize - (getBeforeValue(item)?.chestSize ?? 0)}})cm</span></td>
+              <td>{{item.epigastriumSize}} cm <span *ngIf="getBeforeValue(item)">({{item.epigastriumSize - (getBeforeValue(item)?.epigastriumSize ?? 0)}}cm)</span></td>
+              <td>{{item.bellySize}} cm <span *ngIf="getBeforeValue(item)">({{item.bellySize - (getBeforeValue(item)?.bellySize ?? 0)}}cm)</span></td>
+              <td>{{item.waistSize}} cm <span *ngIf="getBeforeValue(item)">({{item.waistSize - (getBeforeValue(item)?.waistSize ?? 0)}}cm)</span></td>
+              <td>{{item.buttockSize}} cm <span *ngIf="getBeforeValue(item)">({{item.buttockSize - (getBeforeValue(item)?.buttockSize ?? 0)}}cm)</span></td>
+              <td>{{item.haunchSize}} cm <span *ngIf="getBeforeValue(item)">({{item.haunchSize - (getBeforeValue(item)?.haunchSize ?? 0)}}cm)</span></td>
+              <td>{{item.calfSize}} cm <span *ngIf="getBeforeValue(item)">({{item.calfSize - (getBeforeValue(item)?.calfSize ?? 0)}}cm)</span></td>
+              <td>{{item.bicepsSize}} cm <span *ngIf="getBeforeValue(item)">({{item.bicepsSize - (getBeforeValue(item)?.bicepsSize ?? 0)}}cm)</span></td>
+              <td>{{item.underArm}} cm <span *ngIf="getBeforeValue(item)">({{item.underArm - (getBeforeValue(item)?.underArm ?? 0)}}cm)</span></td>
+            </tr>
+          </tbody>
+        </table>
+  </c-card-body>
+</c-card>
+
+<c-card class="my-4">
+  <c-card-body>
+    <c-row>
       <c-col sm="5">
         <h4 class="card-title mb-0" id="traffic">Kilo & Yağ Oranı & BMI</h4>
         <div class="small text-body-secondary">January - December 2023</div>
       </c-col>
       <c-col class="d-none d-md-block" sm="7">
-       
+
         <form [formGroup]="trafficRadioGroup">
           <c-button-group class="float-end me-3" role="group">
-            <input
-              class="btn-check"
-              formControlName="trafficRadio"
-              type="radio"
-              value="Day"
-            />
-            <label
-              (click)="setTrafficPeriod('Day')"
-              cButton
-              cFormCheckLabel
-              color="secondary"
-              variant="outline"
-            >
+            <input class="btn-check" formControlName="trafficRadio" type="radio" value="Day" />
+            <label (click)="setTrafficPeriod('Day')" cButton cFormCheckLabel color="secondary" variant="outline">
               Day
             </label>
-            <input
-              class="btn-check"
-              formControlName="trafficRadio"
-              type="radio"
-              value="Month"
-            />
-            <label
-              (click)="setTrafficPeriod('Month')"
-              cButton
-              cFormCheckLabel
-              color="secondary"
-              variant="outline"
-            >
+            <input class="btn-check" formControlName="trafficRadio" type="radio" value="Month" />
+            <label (click)="setTrafficPeriod('Month')" cButton cFormCheckLabel color="secondary" variant="outline">
               Month
             </label>
-            <input
-              class="btn-check"
-              formControlName="trafficRadio"
-              type="radio"
-              value="Year"
-            />
-            <label
-              (click)="setTrafficPeriod('Year')"
-              cButton
-              cFormCheckLabel
-              color="secondary"
-              variant="outline"
-            >
+            <input class="btn-check" formControlName="trafficRadio" type="radio" value="Year" />
+            <label (click)="setTrafficPeriod('Year')" cButton cFormCheckLabel color="secondary" variant="outline">
               Year
             </label>
           </c-button-group>
         </form>
       </c-col>
     </c-row>
-    <c-chart
-      [data]="mainChart.data"
-      [height]="300"
-      [ngStyle]="{ 'marginTop.px': 40 }"
-      [options]="mainChart.options"
-      [type]="mainChart.type"
-      (chartRef)="handleChartRef($event)"
-    >
+    <c-chart [data]="mainChart.data" [height]="300" [ngStyle]="{ 'marginTop.px': 40 }" [options]="mainChart.options"
+      [type]="mainChart.type" (chartRef)="handleChartRef($event)">
       Main chart
     </c-chart>
   </c-card-body>
@@ -75,26 +82,26 @@
     <c-row class="text-center mb-2" [xl]="4" [lg]="4" [sm]="2" [xs]="1" [gutter]="4">
       <c-col>
         <div class="text-body-secondary">Kilo</div>
-        <strong>{{lastMeasurementModel.weight}} KG</strong>
+        <strong>{{lastMeasurementModel.weight}} KG <span *ngIf="getBeforeValue(lastMeasurementModel)">({{lastMeasurementModel.weight - (getBeforeValue(lastMeasurementModel)?.weight ?? 0)}} Kg)</span></strong>
         <c-progress class="mt-2" thin color="success" value="100" />
       </c-col>
       <c-col>
         <div class="text-body-secondary">Vücut Kitle Endeksi</div>
-        <div class="fw-semibold text-truncate">{{getBMI() | number:'1.2-2'}}</div>
+        <div class="fw-semibold text-truncate">{{getBMI(lastMeasurementModel) | number:'1.2-2'}} <span *ngIf="getBeforeValue(lastMeasurementModel)">({{(getBMI(lastMeasurementModel) - getBMI((getBeforeValue(lastMeasurementModel)))) | number:'1.2-2'}})</span></div>
         <c-progress class="mt-2" thin color="info" value="100" />
       </c-col>
       <c-col>
         <div class="text-body-secondary">Yağ Oranı</div>
-        <div class="fw-semibold text-truncate">% {{getBodyFatRatio() | number:'1.2-2'}}</div>
+        <div class="fw-semibold text-truncate">% {{getBodyFatRatio(lastMeasurementModel) | number:'1.2-2'}} <span *ngIf="getBeforeValue(lastMeasurementModel)">({{(getBodyFatRatio(lastMeasurementModel) - getBodyFatRatio((getBeforeValue(lastMeasurementModel)))) | number:'1.2-2'}})</span></div>
         <c-progress class="mt-2" thin color="warning" value="100" />
       </c-col>
-    
+
       <c-col class="d-none d-xl-block">
         <div class="text-body-secondary">Yağ Kütlesi</div>
-        <div class="fw-semibold text-truncate">{{getBodyFatRatio() / 100 * lastMeasurementModel.weight| number:'1.2-2'}} KG</div>
+        <div class="fw-semibold text-truncate">{{getBodyFatyMass(lastMeasurementModel) | number:'1.2-2'}} <span *ngIf="getBeforeValue(lastMeasurementModel)">({{(getBodyFatyMass(lastMeasurementModel) - getBodyFatyMass((getBeforeValue(lastMeasurementModel)))) | number:'1.2-2'}})</span>
+          KG</div>
         <c-progress class="mt-2" thin value="100" />
       </c-col>
     </c-row>
   </c-card-footer>
 </c-card>
-

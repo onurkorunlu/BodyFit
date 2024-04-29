@@ -37,7 +37,7 @@ export class EntryMeasurementsComponent {
   }
 
   update() {
-    this.updateModel.date = new Date(new Date(this.updateModel.date.toString()).setHours(0,0,0,0));
+    this.updateModel.date = new Date(this.updateModel.date.toString());
     this.measurementService.update(this.updateModel).subscribe({
       next: (v) => {
         this.toastService.showSuccess("Profil bilgileri güncellendi.");

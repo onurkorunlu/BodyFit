@@ -24,7 +24,8 @@ interface WidgetModel {
   mainValue: number,
   minValue: number,
   maxValue: number,
-  rateChange: number,
+  change: number,
+  unit:string,
   chartData: ChartData;
 }
 
@@ -151,19 +152,19 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
       }]
     };
 
-    let finalWeight = this.lastMeasurement.weight;
-    let beforeWeight = finalWeight;
+    let final = this.lastMeasurement.weight;
+    let before = final;
 
     if (this.measurementModel.measurementDetails.length > 1) {
-      beforeWeight = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].weight;
+      before = this.measurementModel.measurementDetails[this.measurementModel.measurementDetails.length - 2].weight;
     }
 
     let maxWeight = Math.max(...this.measurementModel.measurementDetails.map(x => x.weight));
     let minWeight = Math.min(...this.measurementModel.measurementDetails.map(x => x.weight));
-    let rateChange = ((finalWeight - beforeWeight) / beforeWeight) * 100;
+    let change = final - before ;
 
     this.widgetModels.push({
-      color: '#222831', title: 'Kilo', mainValue: finalWeight, rateChange: rateChange, chartData: weightChartData, minValue: minWeight, maxValue: maxWeight
+      color: '#222831', title: 'Kilo', unit:'Kg', mainValue: final, change: change, chartData: weightChartData, minValue: minWeight, maxValue: maxWeight
     });
   }
 
@@ -191,10 +192,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
 
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.chestSize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.chestSize));
-    let rateChange = ((final - before) / before) * 100;
+    let change =  final - before;
 
     this.widgetModels.push({
-      color: '#092635', title: 'Göğüs Ölçüsü', mainValue: final, rateChange: rateChange, chartData: weightChartData, minValue: min, maxValue: max
+      color: '#092635', title: 'Göğüs Ölçüsü', unit:'cm', mainValue: final, change: change, chartData: weightChartData, minValue: min, maxValue: max
     });
   }
 
@@ -221,10 +222,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     }
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.bellySize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.bellySize));
-    let rateChange = ((final - before) / before) * 100;
+    let change =  final - before;
 
     this.widgetModels.push({
-      color: '#070F2B', title: 'Göbek Ölçüsü', mainValue: final, rateChange: rateChange, chartData: weightChartData, minValue: min, maxValue: max
+      color: '#070F2B', title: 'Göbek Ölçüsü', unit:'cm', mainValue: final, change: change, chartData: weightChartData, minValue: min, maxValue: max
     });
   }
 
@@ -251,10 +252,10 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
     }
     let max = Math.max(...this.measurementModel.measurementDetails.map(x => x.buttockSize));
     let min = Math.min(...this.measurementModel.measurementDetails.map(x => x.buttockSize));
-    let rateChange = ((final - before) / before) * 100;
+    let change = before - final;
 
     this.widgetModels.push({
-      color: '#3E3232', title: 'Kalça Ölçüsü', mainValue: final, rateChange: rateChange, chartData: weightChartData, minValue: min, maxValue: max
+      color: '#3E3232', title: 'Kalça Ölçüsü', unit:'cm', mainValue: final, change: change, chartData: weightChartData, minValue: min, maxValue: max
     });
   }
   getOption(widget: WidgetModel): any {

@@ -10,6 +10,13 @@ import {
 } from 'chart.js';
 import { DeepPartial } from 'chart.js/dist/types/utils';
 import { getStyle, hexToRgba } from '@coreui/utils';
+import { MeasurementsService } from 'src/app/services/measurements-service';
+import { ToastService } from 'src/app/services/toast.service';
+import { UserService } from 'src/app/services/user.service';
+import { AppUser } from 'src/app/models/entities/appUser';
+import { Measurement, MeasurementDetail } from 'src/app/models/entities/measurement';
+import { GenderType } from 'src/app/models/enums/GenderType';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 export interface IChartProps {
   data?: ChartData;
@@ -26,8 +33,30 @@ export interface IChartProps {
   providedIn: 'any'
 })
 export class DashboardChartsData {
-  constructor() {
-    this.initMainChart();
+
+  measurementModel: Measurement = new Measurement();
+  lastMeasurementModel: MeasurementDetail = new MeasurementDetail();
+  appUser: AppUser = new AppUser();
+
+  constructor(public measurementService: MeasurementsService, public toastService: ToastService, public userService: UserService,public datePipe: DatePipe, public decimalPipe: DecimalPipe) {
+    this.measurementService.get().subscribe({
+      next: (v) => {
+        this.measurementModel = v;
+        this.lastMeasurementModel = v.measurementDetails[v.measurementDetails.length - 1];
+        this.initMainChart();
+      },
+      error: (e) => this.toastService.showError(e.message),
+      complete: () => console.info('complete')
+    });
+
+    this.userService.get().subscribe({
+      next: (v) => {
+        this.appUser = v;
+        this.initMainChart();
+      },
+      error: (e) => this.toastService.showError(e.message),
+      complete: () => console.info('complete')
+    });
   }
 
   public mainChart: IChartProps = { type: 'line' };
@@ -41,49 +70,26 @@ export class DashboardChartsData {
     const brandInfo = getStyle('--cui-info') ?? '#20a8d8';
     const brandInfoBg = hexToRgba(getStyle('--cui-info') ?? '#20a8d8', 10);
     const brandDanger = getStyle('--cui-danger') ?? '#f86c6b';
+    const brandWarning = getStyle('--cui-warning') ?? '#f86c6b';
 
     // mainChart
-    this.mainChart['elements'] = period === 'Month' ? 12 : 27;
-    this.mainChart['Data1'] = [];
-    this.mainChart['Data2'] = [];
-    this.mainChart['Data3'] = [];
+    this.mainChart['elements'] = 52;
+    this.mainChart['Weight'] = [];
+    this.mainChart['BodFatMass'] = [];
+    this.mainChart['BMI'] = [];
 
     // generate random values for mainChart
-    for (let i = 0; i <= this.mainChart['elements']; i++) {
-      this.mainChart['Data1'].push(this.random(50, 240));
-      this.mainChart['Data2'].push(this.random(20, 160));
-      this.mainChart['Data3'].push(65);
-    }
+    this.measurementModel.measurementDetails.forEach(element => {
+      this.mainChart['Weight'].push(this.decimalPipe.transform(element.weight, '1.2-2') ?? '');
+      this.mainChart['BodFatMass'].push(this.decimalPipe.transform(this.getBodyFatMass(element), '1.2-2') ?? '');
+      this.mainChart['BMI'].push(this.decimalPipe.transform(this.getBMI(element), '1.2-2') ?? '');
+    });
 
     let labels: string[] = [];
-    if (period === 'Month') {
-      labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ];
-    } else {
-      /* tslint:disable:max-line-length */
-      const week = [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ];
-      labels = week.concat(week, week, week);
-    }
+    this.measurementModel.measurementDetails.forEach(element => {
+        labels.push(this.datePipe.transform(element.date, 'dd.MM.yyyy') ?? '');
+    });
+   
 
     const colors = [
       {
@@ -108,22 +114,30 @@ export class DashboardChartsData {
         borderWidth: 1,
         borderDash: [8, 5]
       }
+      ,
+      {
+        // brandWarning
+        backgroundColor: 'transparent',
+        borderColor: brandWarning || '#f86c6b',
+        pointHoverBackgroundColor: brandWarning,
+        borderWidth: 5,
+      }
     ];
 
     const datasets: ChartDataset[] = [
       {
-        data: this.mainChart['Data1'],
-        label: 'Current',
+        data: this.mainChart['Weight'],
+        label: 'Kilo',
         ...colors[0]
       },
       {
-        data: this.mainChart['Data2'],
-        label: 'Previous',
-        ...colors[1]
+        data: this.mainChart['BodFatMass'],
+        label: 'Yağ Kütlesi',
+        ...colors[3]
       },
       {
-        data: this.mainChart['Data3'],
-        label: 'BEP',
+        data: this.mainChart['BMI'],
+        label: 'BMI',
         ...colors[2]
       }
     ];
@@ -197,5 +211,42 @@ export class DashboardChartsData {
       }
     };
     return scales;
+  }
+
+  getBMI(measurementDetail:MeasurementDetail | null): number {
+    if (!measurementDetail) {
+      return 0;
+    }
+    return measurementDetail.weight / Math.pow(this.appUser.height / 100, 2);
+  }
+
+  getBodyFatRatio(measurementDetail:MeasurementDetail | null): number {
+
+    if (!measurementDetail) {
+      return 0;
+    }
+
+    if (this.appUser.gender == GenderType.Male) {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 16.2;
+    }
+    else {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 5.4;
+    }
+  }
+
+  getBodyFatMass(measurementDetail:MeasurementDetail | null){
+    if (!measurementDetail) {
+      return 0;
+    }
+    return this.getBodyFatRatio(measurementDetail) * measurementDetail.weight / 100;
+  }
+
+  getBodyMassRatio(measurementDetail:MeasurementDetail): number {
+    if (this.appUser.gender == GenderType.Male) {
+      return Math.pow(this.appUser.height,2) * this.getBMI(measurementDetail);
+    }
+    else {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 5.4;
+    }
   }
 }

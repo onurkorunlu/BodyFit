@@ -1,4 +1,4 @@
-import { DOCUMENT, DecimalPipe, NgIf, NgStyle } from '@angular/common';
+import { DOCUMENT, DatePipe, DecimalPipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
@@ -11,6 +11,7 @@ import {
   CardFooterComponent,
   CardHeaderComponent,
   ColComponent,
+  ContainerComponent,
   FormCheckLabelDirective,
   GutterDirective,
   ProgressBarDirective,
@@ -50,7 +51,7 @@ interface IUser {
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
   standalone: true,
-  imports: [WidgetsDropdownComponent, NgIf, DecimalPipe, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
+  imports: [WidgetsDropdownComponent,ContainerComponent, DatePipe, NgIf,NgFor, DecimalPipe, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
 })
 export class DashboardComponent implements OnInit {
 
@@ -58,6 +59,7 @@ export class DashboardComponent implements OnInit {
   lastMeasurementModel: MeasurementDetail = new MeasurementDetail();
   appUser: AppUser = new AppUser();
 
+  Math: Math = Math;
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #document: Document = inject(DOCUMENT);
   readonly #renderer: Renderer2 = inject(Renderer2);
@@ -184,28 +186,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  getBMI(): number {
-    return this.lastMeasurementModel.weight / Math.pow(this.appUser.height / 100, 2);
-  }
-
-  getBodyFatRatio(): number {
-    if (this.appUser.gender == GenderType.Male) {
-      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 16.2;
-    }
-    else {
-      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 5.4;
-    }
-  }
-
-  getBodyMassRatio(): number {
-    if (this.appUser.gender == GenderType.Male) {
-      return Math.pow(this.appUser.height,2) * this.getBMI();
-    }
-    else {
-      return (1.2 * this.getBMI()) + (0.23 * this.appUser.age) - 5.4;
-    }
-  }
-
   initCharts(): void {
     this.mainChart = this.#chartsData.mainChart;
   }
@@ -241,5 +221,55 @@ export class DashboardComponent implements OnInit {
         this.mainChartRef().update();
       });
     }
+  }
+
+  getBMI(measurementDetail:MeasurementDetail | null): number {
+    if (!measurementDetail) {
+      return 0;
+    }
+    return measurementDetail.weight / Math.pow(this.appUser.height / 100, 2);
+  }
+
+  getBodyFatRatio(measurementDetail:MeasurementDetail | null): number {
+
+    if (!measurementDetail) {
+      return 0;
+    }
+
+    if (this.appUser.gender == GenderType.Male) {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 16.2;
+    }
+    else {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 5.4;
+    }
+  }
+
+  getBodyFatyMass(measurementDetail:MeasurementDetail | null){
+    if (!measurementDetail) {
+      return 0;
+    }
+    return this.getBodyFatRatio(measurementDetail) * measurementDetail.weight / 100;
+  }
+
+  getBodyMassRatio(measurementDetail:MeasurementDetail): number {
+    if (this.appUser.gender == GenderType.Male) {
+      return Math.pow(this.appUser.height,2) * this.getBMI(measurementDetail);
+    }
+    else {
+      return (1.2 * this.getBMI(measurementDetail)) + (0.23 * this.appUser.age) - 5.4;
+    }
+  }
+
+  getBeforeValue(measurementDetail: MeasurementDetail): MeasurementDetail | null{
+
+    if (!measurementDetail) {
+      return null;
+    }
+
+    let index = this.measurementModel.measurementDetails.indexOf(measurementDetail);
+    if (index == 0) {
+      return null;
+    }
+    return this.measurementModel.measurementDetails[index - 1];
   }
 }

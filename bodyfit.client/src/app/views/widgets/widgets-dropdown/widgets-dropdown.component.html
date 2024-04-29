@@ -4,7 +4,7 @@
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
         {{widget.mainValue | number : '1.2-2'}}
         <span class="fw-normal" style="font-size: 12px;">
-          ({{widget.rateChange | number : '1.2-2'}}% <svg cIcon name="cilArrowBottom" size="sm"></svg>)
+          {{widget.change | number : '1.2-2'}} {{widget.unit}} <svg cIcon name="cilArrowBottom" size="sm"></svg>
         </span>
       </ng-template>
       <ng-template cTemplateId="widgetChartTemplate">

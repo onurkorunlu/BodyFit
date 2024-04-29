@@ -44,6 +44,7 @@ export class ProfileComponent {
     this.updateModel.dailyActivityType = parseInt(this.updateModel.dailyActivityType.toString());
     this.updateModel.targetType = parseInt(this.updateModel.targetType.toString());
     this.updateModel.exercisePeriod = parseInt(this.updateModel.exercisePeriod.toString());
+    this.updateModel.gender = parseInt(this.updateModel.gender.toString());
 
     this.userService.update(this.updateModel).subscribe({
       next: (v) => {
